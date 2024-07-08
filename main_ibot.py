@@ -78,8 +78,8 @@ def get_args_parser():
         loss over [CLS] tokens (Default: 1.0)""")
     parser.add_argument('--lambda2', default=1.0, type=float, help="""loss weight for beit 
         loss over masked patch tokens (Default: 1.0)""")
-    parser.add_argument('--teacher_weight', default=None, type=float, help="""Pretrained teacher model weight path. (Default: None)""")
-    parser.add_argument('--student_weight', default=None, type=float, help="""Pretrained studen model weight path. (Default: None)""")
+    parser.add_argument('--teacher_weight', default=None, help="""Pretrained teacher model weight path. (Default: None)""")
+    parser.add_argument('--student_weight', default=None, help="""Pretrained studen model weight path. (Default: None)""")
     
     # Temperature teacher parameters
     parser.add_argument('--warmup_teacher_temp', default=0.04, type=float,
