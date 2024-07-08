@@ -223,6 +223,14 @@ def train_ibot(args):
         embed_dim = student.fc.weight.shape[1]
     else:
         print(f"Unknow architecture: {args.arch}")
+    
+    if args.student_weight:
+        utils.load_pretrained_weights(student, args.student_weight, 'student', args.arch, args.patch_size)
+        #student.load_state_dict(torch.load(args.student_weight))
+    if args.teacher_weight:
+        utils.load_pretrained_weights(teacher, args.teacher_weight, 'teacher', args.arch, args.patch_size)
+        #teacher.load_state_dict(torch.load(args.teacher_weight))
+    
 
     # multi-crop wrapper handles forward with inputs of different resolutions
     student = utils.MultiCropWrapper(student, iBOTHead(
@@ -245,6 +253,7 @@ def train_ibot(args):
             shared_head=args.shared_head_teacher,
         ),
     )
+    # move networks to gpu
     student, teacher = student.cuda(), teacher.cuda()
     # synchronize batch norms (if any)
     if utils.has_batchnorms(student):
@@ -265,14 +274,8 @@ def train_ibot(args):
     # there is no backpropagation through the teacher, so no need for gradients
     for p in teacher.parameters():
         p.requires_grad = False
-    # move networks to gpu
-    if args.student_weight:
-        utils.load_pretrained_weights(student, args.student_weight, 'student', args.arch, args.patch_size)
-        #student.load_state_dict(torch.load(args.student_weight))
-    if args.teacher_weight:
-        utils.load_pretrained_weights(teacher, args.teacher_weight, 'teacher', args.arch, args.patch_size)
-        #teacher.load_state_dict(torch.load(args.teacher_weight))
-    
+  
+
     print(f"Student and Teacher are built: they are both {args.arch} network.")
 
     # ============ preparing loss ... ============
