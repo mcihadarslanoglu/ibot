@@ -267,10 +267,10 @@ def train_ibot(args):
         p.requires_grad = False
     # move networks to gpu
     if args.student_weight:
-        utils.load_pretrained_weights(student, args.student_weight, args.checkpoint_key, args.arch, args.patch_size)
+        utils.load_pretrained_weights(student, args.student_weight, 'student', args.arch, args.patch_size)
         #student.load_state_dict(torch.load(args.student_weight))
     if args.teacher_weight:
-        utils.load_pretrained_weights(teacher, args.teacher_weight, args.checkpoint_key, args.arch, args.patch_size)
+        utils.load_pretrained_weights(teacher, args.teacher_weight, 'teacher', args.arch, args.patch_size)
         #teacher.load_state_dict(torch.load(args.teacher_weight))
     
     print(f"Student and Teacher are built: they are both {args.arch} network.")
