@@ -78,7 +78,9 @@ def get_args_parser():
         loss over [CLS] tokens (Default: 1.0)""")
     parser.add_argument('--lambda2', default=1.0, type=float, help="""loss weight for beit 
         loss over masked patch tokens (Default: 1.0)""")
-        
+    parser.add_argument('--teacher_weight', default=None, type=float, help="""Pretrained teacher model weight path. (Default: None)""")
+    parser.add_argument('--student_weight', default=None, type=float, help="""Pretrained studen model weight path. (Default: None)""")
+    
     # Temperature teacher parameters
     parser.add_argument('--warmup_teacher_temp', default=0.04, type=float,
         help="""Initial value for the teacher temperature: 0.04 works well in most cases.
@@ -244,6 +246,10 @@ def train_ibot(args):
         ),
     )
     # move networks to gpu
+    if args.student_weight:
+        student.load_state_dict(torch.load(args.student_weight))
+    if args.teacher_weight:
+        teacher.load_state_dict(torch.load(args.teacher_weight))
     student, teacher = student.cuda(), teacher.cuda()
     # synchronize batch norms (if any)
     if utils.has_batchnorms(student):
