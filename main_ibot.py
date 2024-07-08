@@ -245,7 +245,7 @@ def train_ibot(args):
             shared_head=args.shared_head_teacher,
         ),
     )
-
+    student, teacher = student.cuda(), teacher.cuda()
     # synchronize batch norms (if any)
     if utils.has_batchnorms(student):
         student = nn.SyncBatchNorm.convert_sync_batchnorm(student)
@@ -270,7 +270,7 @@ def train_ibot(args):
         student.load_state_dict(torch.load(args.student_weight))
     if args.teacher_weight:
         teacher.load_state_dict(torch.load(args.teacher_weight))
-    student, teacher = student.cuda(), teacher.cuda()
+    
     print(f"Student and Teacher are built: they are both {args.arch} network.")
 
     # ============ preparing loss ... ============
